@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Search, User } from 'lucide-react'
+import { ArrowLeft, Search, User } from 'lucide-react'
 import Link from 'next/link'
 
 // Mock data for borrowers
@@ -33,6 +33,11 @@ export function BorrowerManagement() {
 
   return (
     <div className="container mx-auto p-4">
+      <Link href="/" passHref>
+        <Button variant="outline" className="mb-4">
+          <ArrowLeft className="mr-2 h-4 w-4" /> Back to Main
+        </Button>
+      </Link>
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-2xl font-bold">Borrower Management</CardTitle>

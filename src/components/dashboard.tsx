@@ -6,6 +6,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { BarChart, Bell, CreditCard, DollarSign, Menu, User } from "lucide-react"
+import Link from 'next/link'
 
 export function Dashboard() {
   return (
@@ -120,13 +121,17 @@ export function Dashboard() {
                   </thead>
                   <tbody className="bg-white divide-y divide-gray-200">
                     {[
-                      { name: "Alice Johnson", amount: "$5,000", rate: "8%", status: "active" },
-                      { name: "Bob Smith", amount: "$3,500", rate: "7.5%", status: "overdue" },
-                      { name: "Charlie Brown", amount: "$2,000", rate: "9%", status: "active" },
-                      { name: "Diana Prince", amount: "$4,500", rate: "8.5%", status: "active" },
+                      { name: "Alice Johnson", amount: "$5,000", rate: "8%", status: "active", borrowerId:1 },
+                      { name: "Bob Smith", amount: "$3,500", rate: "7.5%", status: "overdue", borrowerId:1 },
+                      { name: "Charlie Brown", amount: "$2,000", rate: "9%", status: "active", borrowerId:1 },
+                      { name: "Diana Prince", amount: "$4,500", rate: "8.5%", status: "active", borrowerId:1 },
                     ].map((loan, index) => (
                       <tr key={index}>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{loan.name}</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                          <Link href={`/borrowers/${loan.borrowerId}`} passHref>
+                            {loan.name}
+                          </Link>
+                        </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{loan.amount}</td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{loan.rate}</td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">

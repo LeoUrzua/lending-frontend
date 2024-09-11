@@ -91,7 +91,9 @@ export function Dashboard() {
             <div className="mt-8">
               <Card>
                 <CardHeader>
-                  <CardTitle>Loan Distribution</CardTitle>
+                  <Link href={'/loans'} passHref>
+                    <CardTitle>Loan Distribution</CardTitle>
+                  </Link>
                 </CardHeader>
                 <CardContent>
                   <div className="h-[200px] w-full">
@@ -108,7 +110,9 @@ export function Dashboard() {
             </div>
 
             <div className="mt-8">
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">Recent Loans</h2>
+              <Link href={'/loans'} passHref>
+                <h2 className="text-lg font-semibold text-gray-900 mb-4">Recent Loans</h2>
+              </Link>
               <div className="overflow-x-auto">
                 <table className="min-w-full divide-y divide-gray-200">
                   <thead className="bg-gray-50">

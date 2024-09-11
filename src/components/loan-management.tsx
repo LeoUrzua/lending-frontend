@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import { Edit, Plus, Trash2, AlertCircle, CheckCircle2 } from 'lucide-react'
+import { Edit, Plus, Trash2, AlertCircle, CheckCircle2, ArrowLeft } from 'lucide-react'
 import Link from 'next/link'
 
 // Mock data for active loans
@@ -61,6 +61,11 @@ export function LoanManagement() {
           <AlertDescription>{alert.message}</AlertDescription>
         </Alert>
       )}
+      <Link href="/" passHref>
+        <Button variant="outline" className="mb-4">
+          <ArrowLeft className="mr-2 h-4 w-4" /> Back to Main
+        </Button>
+      </Link>
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-2xl font-bold">Loan Management</CardTitle>

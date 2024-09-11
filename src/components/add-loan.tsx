@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -10,43 +10,117 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Calendar } from "@/components/ui/calendar"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { CalendarIcon, ArrowLeft } from 'lucide-react'
+import { CalendarIcon, ArrowLeft, Loader2 } from 'lucide-react'
 import { format } from 'date-fns'
+import toast, { Toaster } from 'react-hot-toast'
 
-// Mock data for existing borrowers
-const existingBorrowers = [
-  { id: '1', name: 'Alice Johnson' },
-  { id: '2', name: 'Bob Smith' },
-  { id: '3', name: 'Charlie Brown' },
-]
+// API functions
+const API_BASE_URL = 'https://api.example.com' // Replace with your actual API base URL
+
+async function fetchBorrowers(searchTerm: string) {
+  const response = await fetch(`${API_BASE_URL}/api/borrowers?search=${searchTerm}`)
+  if (!response.ok) throw new Error('Failed to fetch borrowers')
+  return response.json()
+}
+
+async function addBorrower(borrower: { name: string; email: string; phone: string }) {
+  const response = await fetch(`${API_BASE_URL}/api/borrowers`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(borrower),
+  })
+  if (!response.ok) throw new Error('Failed to add borrower')
+  return response.json()
+}
+
+async function addLoan(loan: { borrowerId: string; amount: number; startDate: string }) {
+  const response = await fetch(`${API_BASE_URL}/api/loans`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(loan),
+  })
+  if (!response.ok) throw new Error('Failed to add loan')
+  return response.json()
+}
 
 export function AddLoan() {
   const router = useRouter()
   const [selectedBorrower, setSelectedBorrower] = useState('')
+  const [borrowers, setBorrowers] = useState([])
   const [loanAmount, setLoanAmount] = useState('')
   const [startDate, setStartDate] = useState<Date | undefined>(new Date())
   const [isNewBorrowerDialogOpen, setIsNewBorrowerDialogOpen] = useState(false)
   const [newBorrower, setNewBorrower] = useState({ name: '', phone: '', email: '' })
+  const [isLoading, setIsLoading] = useState(false)
+  const [searchTerm, setSearchTerm] = useState('')
 
-  const handleSubmit = (e: React.FormEvent) => {
+  useEffect(() => {
+    const delayDebounceFn = setTimeout(() => {
+      if (searchTerm) {
+        fetchBorrowers(searchTerm)
+          .then(setBorrowers)
+          .catch(error => toast.error(error.message))
+      }
+    }, 300)
+
+    return () => clearTimeout(delayDebounceFn)
+  }, [searchTerm])
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    // Here you would typically send the data to your backend
-    console.log({ selectedBorrower, loanAmount, startDate })
-    // After successful submission, redirect to the dashboard
-    router.push('/dashboard')
+    if (isLoading) return
+
+    setIsLoading(true)
+    try {
+      if (!selectedBorrower || !loanAmount || !startDate) {
+        throw new Error('Please fill in all fields')
+      }
+
+      if (parseFloat(loanAmount) <= 0) {
+        throw new Error('Loan amount must be greater than zero')
+      }
+
+      const loan = {
+        borrowerId: selectedBorrower,
+        amount: parseFloat(loanAmount),
+        startDate: format(startDate, 'yyyy-MM-dd'),
+      }
+
+      await addLoan(loan)
+      toast.success('Loan added successfully')
+      router.push('/dashboard')
+    } catch (error) {
+      toast.error(error.message)
+    } finally {
+      setIsLoading(false)
+    }
   }
 
-  const handleAddNewBorrower = () => {
-    // Here you would typically send the new borrower data to your backend
-    console.log(newBorrower)
-    // Close the dialog and reset the form
-    setIsNewBorrowerDialogOpen(false)
-    setNewBorrower({ name: '', phone: '', email: '' })
-    // In a real app, you might want to add the new borrower to the list and select them
+  const handleAddNewBorrower = async () => {
+    if (isLoading) return
+
+    setIsLoading(true)
+    try {
+      if (!newBorrower.name || !newBorrower.email || !newBorrower.phone) {
+        throw new Error('Please fill in all fields for the new borrower')
+      }
+
+      const addedBorrower = await addBorrower(newBorrower)
+      setSelectedBorrower(addedBorrower.id)
+      setBorrowers(prevBorrowers => [...prevBorrowers, addedBorrower])
+      setIsNewBorrowerDialogOpen(false)
+      setNewBorrower({ name: '', phone: '', email: '' })
+      toast.success('New borrower added successfully')
+    } catch (error) {
+      toast.error(error.message)
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
     <div className="container mx-auto px-4 py-8">
+      <Toaster position="top-right" />
       <Button variant="ghost" onClick={() => router.push('/dashboard')} className="mb-4">
         <ArrowLeft className="mr-2 h-4 w-4" /> Back to Dashboard
       </Button>
@@ -60,21 +134,29 @@ export function AddLoan() {
               <Label htmlFor="borrower">Borrower</Label>
               <Select value={selectedBorrower} onValueChange={setSelectedBorrower}>
                 <SelectTrigger id="borrower">
-                  <SelectValue placeholder="Select a borrower" />
+                  <SelectValue placeholder="Search for a borrower" />
                 </SelectTrigger>
                 <SelectContent>
-                  {existingBorrowers.map((borrower) => (
+                  <Input
+                    placeholder="Search borrowers..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="mb-2"
+                  />
+                  {borrowers.map((borrower) => (
                     <SelectItem key={borrower.id} value={borrower.id}>
                       {borrower.name}
                     </SelectItem>
                   ))}
-                  <SelectItem value="new">
-                    <Dialog>
-                      <DialogTrigger asChild onClick={() => setIsNewBorrowerDialogOpen(true)}>
-                        <span className="text-blue-500">+ Add New Borrower</span>
-                      </DialogTrigger>
-                    </Dialog>
-                  </SelectItem>
+                  {borrowers.length === 0 && searchTerm && (
+                    <SelectItem value="new">
+                      <Dialog>
+                        <DialogTrigger asChild onClick={() => setIsNewBorrowerDialogOpen(true)}>
+                          <span className="text-blue-500">+ Add "{searchTerm}" as new borrower</span>
+                        </DialogTrigger>
+                      </Dialog>
+                    </SelectItem>
+                  )}
                 </SelectContent>
               </Select>
             </div>
@@ -112,7 +194,10 @@ export function AddLoan() {
               </Popover>
             </div>
             <div className="flex space-x-2 pt-4">
-              <Button type="submit" className="flex-1">Submit</Button>
+              <Button type="submit" className="flex-1" disabled={isLoading}>
+                {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+                Submit
+              </Button>
               <Button type="button" variant="outline" className="flex-1" onClick={() => router.push('/dashboard')}>
                 Cancel
               </Button>
@@ -159,7 +244,8 @@ export function AddLoan() {
                 required
               />
             </div>
-            <Button onClick={handleAddNewBorrower} className="w-full">
+            <Button onClick={handleAddNewBorrower} className="w-full" disabled={isLoading}>
+              {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
               Add Borrower
             </Button>
           </div>

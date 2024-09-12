@@ -11,8 +11,17 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Plus } from 'lucide-react'
 
+interface Payment {
+  id: number;
+  loanId: number;
+  borrowerId: number;
+  borrowerName: string;
+  amount: number;
+  date: string;
+}
+
 // Mock data for payments
-const initialPayments = [
+const initialPayments: Payment[] = [
   { id: 1, loanId: 1, borrowerId: 1, borrowerName: "Alice Johnson", amount: 500, date: "2023-06-01" },
   { id: 2, loanId: 1, borrowerId: 1, borrowerName: "Alice Johnson", amount: 500, date: "2023-07-01" },
   { id: 3, loanId: 2, borrowerId: 2, borrowerName: "Bob Smith", amount: 300, date: "2023-06-15" },
@@ -59,15 +68,15 @@ export function PaymentsTracking() {
     setIsAddDialogOpen(false)
   }
 
-  const groupPaymentsByLoan = () => {
-    return payments.reduce((grouped, payment) => {
+  const groupPaymentsByLoan = (): { [key: number]: Payment[] } => {
+    return payments.reduce((grouped: { [key: number]: Payment[] }, payment) => {
       (grouped[payment.loanId] = grouped[payment.loanId] || []).push(payment)
       return grouped
     }, {})
   }
 
-  const groupPaymentsByBorrower = () => {
-    return payments.reduce((grouped, payment) => {
+  const groupPaymentsByBorrower = (): { [key: number]: Payment[] } => {
+    return payments.reduce((grouped: { [key: number]: Payment[] }, payment) => {
       (grouped[payment.borrowerId] = grouped[payment.borrowerId] || []).push(payment)
       return grouped
     }, {})

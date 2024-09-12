@@ -46,7 +46,12 @@ async function addLoan(loan: { borrowerId: string; amount: number; startDate: st
 export function AddLoan() {
   const router = useRouter()
   const [selectedBorrower, setSelectedBorrower] = useState('')
-  const [borrowers, setBorrowers] = useState([])
+  interface Borrower {
+    id: string;
+    name: string;
+  }
+  
+  const [borrowers, setBorrowers] = useState<Borrower[]>([]);
   const [loanAmount, setLoanAmount] = useState('')
   const [startDate, setStartDate] = useState<Date | undefined>(new Date())
   const [isNewBorrowerDialogOpen, setIsNewBorrowerDialogOpen] = useState(false)
@@ -90,7 +95,7 @@ export function AddLoan() {
       toast.success('Loan added successfully')
       router.push('/dashboard')
     } catch (error) {
-      toast.error(error.message)
+      toast.error((error as Error).message);
     } finally {
       setIsLoading(false)
     }
@@ -112,7 +117,7 @@ export function AddLoan() {
       setNewBorrower({ name: '', phone: '', email: '' })
       toast.success('New borrower added successfully')
     } catch (error) {
-      toast.error(error.message)
+      toast.error((error as Error).message);
     } finally {
       setIsLoading(false)
     }

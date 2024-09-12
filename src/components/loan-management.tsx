@@ -39,7 +39,7 @@ export function LoanManagement() {
       setIsAddDialogOpen(false)
       setAlert({ show: true, message: "The new loan has been successfully added.", type: 'success' })
     } catch (error) {
-      setAlert({ show: true, message: error.message, type: 'error' })
+      setAlert({ show: true, message: (error as Error).message, type: 'error' })
     }
   }
 

@@ -77,7 +77,7 @@ export function LoanManagement() {
               <DialogHeader>
                 <DialogTitle>Add New Loan</DialogTitle>
                 <DialogDescription>
-                  Enter the details of the new loan here. Click save when you're done.
+                  Enter the details of the new loan here. Click save when you&#39;re done.
                 </DialogDescription>
               </DialogHeader>
               <div className="grid gap-4 py-4">

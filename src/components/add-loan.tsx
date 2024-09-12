@@ -152,7 +152,7 @@ export function AddLoan() {
                     <SelectItem value="new">
                       <Dialog>
                         <DialogTrigger asChild onClick={() => setIsNewBorrowerDialogOpen(true)}>
-                          <span className="text-blue-500">+ Add "{searchTerm}" as new borrower</span>
+                          <span className="text-blue-500">+ Add &quot;{searchTerm}&quot; as new borrower</span>
                         </DialogTrigger>
                       </Dialog>
                     </SelectItem>

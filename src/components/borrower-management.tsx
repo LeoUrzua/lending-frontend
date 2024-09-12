@@ -17,7 +17,7 @@ const initialBorrowers = [
 ]
 
 export function BorrowerManagement() {
-  const [borrowers, setBorrowers] = useState(initialBorrowers)
+  const [borrowers] = useState(initialBorrowers)
   const [searchTerm, setSearchTerm] = useState('')
 
   const filteredBorrowers = borrowers.filter(borrower =>

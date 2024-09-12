@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { Plus, DollarSign } from 'lucide-react'
+import { Plus } from 'lucide-react'
 
 // Mock data for payments
 const initialPayments = [
@@ -86,7 +86,7 @@ export function PaymentsTracking() {
               <DialogHeader>
                 <DialogTitle>Add New Payment</DialogTitle>
                 <DialogDescription>
-                  Enter the details of the new payment here. Click save when you're done.
+                  Enter the details of the new payment here. Click save when you&#39;re done.
                 </DialogDescription>
               </DialogHeader>
               <div className="grid gap-4 py-4">

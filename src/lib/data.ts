@@ -2,7 +2,7 @@ import { supabase } from './supabase'
 
 export async function getBorrowers() {
     const { data, error } = await supabase
-        .from('Borrowers')
+        .from('borrowers')
         .select('*')
     if (error) throw error
     return data

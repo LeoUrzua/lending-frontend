@@ -11,65 +11,40 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { Calendar } from "@/components/ui/calendar"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { CalendarIcon, ArrowLeft, Loader2 } from 'lucide-react'
-import { format } from 'date-fns'
+import { format, addMonths } from 'date-fns'
 import toast, { Toaster } from 'react-hot-toast'
+import { getBorrowers, addBorrower, addLoan } from '@/lib/data'
+import Link from 'next/link'
 
-// API functions
-const API_BASE_URL = 'https://api.example.com' // Replace with your actual API base URL
-
-async function fetchBorrowers(searchTerm: string) {
-  const response = await fetch(`${API_BASE_URL}/api/borrowers?search=${searchTerm}`)
-  if (!response.ok) throw new Error('Failed to fetch borrowers')
-  return response.json()
-}
-
-async function addBorrower(borrower: { name: string; email: string; phone: string }) {
-  const response = await fetch(`${API_BASE_URL}/api/borrowers`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(borrower),
-  })
-  if (!response.ok) throw new Error('Failed to add borrower')
-  return response.json()
-}
-
-async function addLoan(loan: { borrowerId: string; amount: number; startDate: string }) {
-  const response = await fetch(`${API_BASE_URL}/api/loans`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(loan),
-  })
-  if (!response.ok) throw new Error('Failed to add loan')
-  return response.json()
+interface Borrower {
+  id: string;
+  name: string;
 }
 
 export function AddLoan() {
   const router = useRouter()
   const [selectedBorrower, setSelectedBorrower] = useState('')
-  interface Borrower {
-    id: string;
-    name: string;
-  }
-  
-  const [borrowers, setBorrowers] = useState<Borrower[]>([]);
+  const [borrowers, setBorrowers] = useState<Borrower[]>([])
   const [loanAmount, setLoanAmount] = useState('')
+  const [interestRate, setInterestRate] = useState('')
   const [startDate, setStartDate] = useState<Date | undefined>(new Date())
+  const [dueDate, setDueDate] = useState<Date | undefined>(addMonths(new Date(), 1))
   const [isNewBorrowerDialogOpen, setIsNewBorrowerDialogOpen] = useState(false)
   const [newBorrower, setNewBorrower] = useState({ name: '', phone: '', email: '' })
   const [isLoading, setIsLoading] = useState(false)
   const [searchTerm, setSearchTerm] = useState('')
 
   useEffect(() => {
-    const delayDebounceFn = setTimeout(() => {
-      if (searchTerm) {
-        fetchBorrowers(searchTerm)
-          .then(setBorrowers)
-          .catch(error => toast.error(error.message))
+    const fetchBorrowersData = async () => {
+      try {
+        const data = await getBorrowers()
+        setBorrowers(data)
+      } catch (error) {
+        toast.error('Failed to fetch borrowers')
       }
-    }, 300)
-
-    return () => clearTimeout(delayDebounceFn)
-  }, [searchTerm])
+    }
+    fetchBorrowersData()
+  }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -77,25 +52,30 @@ export function AddLoan() {
 
     setIsLoading(true)
     try {
-      if (!selectedBorrower || !loanAmount || !startDate) {
+      if (!selectedBorrower || !loanAmount || !interestRate || !startDate || !dueDate) {
         throw new Error('Please fill in all fields')
       }
 
-      if (parseFloat(loanAmount) <= 0) {
-        throw new Error('Loan amount must be greater than zero')
+      const amount = parseFloat(loanAmount)
+      const rate = parseFloat(interestRate)
+
+      if (amount <= 0 || rate <= 0) {
+        throw new Error('Amount and interest rate must be greater than zero')
       }
 
-      const loan = {
-        borrowerId: selectedBorrower,
-        amount: parseFloat(loanAmount),
-        startDate: format(startDate, 'yyyy-MM-dd'),
-      }
-
-      await addLoan(loan)
+      await addLoan(
+        'current-user-id', // Replace with actual lender ID
+        selectedBorrower,
+        amount,
+        rate,
+        startDate,
+        dueDate,
+        'Active'
+      )
       toast.success('Loan added successfully')
       router.push('/dashboard')
     } catch (error) {
-      toast.error((error as Error).message);
+      toast.error((error as Error).message)
     } finally {
       setIsLoading(false)
     }
@@ -106,18 +86,18 @@ export function AddLoan() {
 
     setIsLoading(true)
     try {
-      if (!newBorrower.name || !newBorrower.email || !newBorrower.phone) {
-        throw new Error('Please fill in all fields for the new borrower')
+      if (!newBorrower.name || !newBorrower.phone) {
+        throw new Error('Please fill in name and phone number for the new borrower')
       }
 
-      const addedBorrower = await addBorrower(newBorrower)
+      const addedBorrower = await addBorrower(newBorrower.name, newBorrower.phone)
       setSelectedBorrower(addedBorrower.id)
       setBorrowers(prevBorrowers => [...prevBorrowers, addedBorrower])
       setIsNewBorrowerDialogOpen(false)
       setNewBorrower({ name: '', phone: '', email: '' })
       toast.success('New borrower added successfully')
     } catch (error) {
-      toast.error((error as Error).message);
+      toast.error((error as Error).message)
     } finally {
       setIsLoading(false)
     }
@@ -139,31 +119,21 @@ export function AddLoan() {
               <Label htmlFor="borrower">Borrower</Label>
               <Select value={selectedBorrower} onValueChange={setSelectedBorrower}>
                 <SelectTrigger id="borrower">
-                  <SelectValue placeholder="Search for a borrower" />
+                  <SelectValue placeholder="Select a borrower" />
                 </SelectTrigger>
                 <SelectContent>
-                  <Input
-                    placeholder="Search borrowers..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="mb-2"
-                  />
                   {borrowers.map((borrower) => (
                     <SelectItem key={borrower.id} value={borrower.id}>
                       {borrower.name}
                     </SelectItem>
                   ))}
-                  {borrowers.length === 0 && searchTerm && (
-                    <SelectItem value="new">
-                      <Dialog>
-                        <DialogTrigger asChild onClick={() => setIsNewBorrowerDialogOpen(true)}>
-                          <span className="text-blue-500">+ Add &quot;{searchTerm}&quot; as new borrower</span>
-                        </DialogTrigger>
-                      </Dialog>
-                    </SelectItem>
-                  )}
                 </SelectContent>
               </Select>
+              <Link href="/borrowers/add" passHref>
+                <Button type="button" variant="outline" className="mt-2">
+                  Add New Borrower
+                </Button>
+              </Link>
             </div>
             <div className="space-y-2">
               <Label htmlFor="amount">Loan Amount</Label>
@@ -173,6 +143,18 @@ export function AddLoan() {
                 placeholder="Enter loan amount"
                 value={loanAmount}
                 onChange={(e) => setLoanAmount(e.target.value)}
+                required
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="interestRate">Interest Rate (%)</Label>
+              <Input
+                id="interestRate"
+                type="number"
+                step="0.01"
+                placeholder="Enter interest rate"
+                value={interestRate}
+                onChange={(e) => setInterestRate(e.target.value)}
                 required
               />
             </div>
@@ -193,6 +175,28 @@ export function AddLoan() {
                     mode="single"
                     selected={startDate}
                     onSelect={setStartDate}
+                    initialFocus
+                  />
+                </PopoverContent>
+              </Popover>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="dueDate">Due Date</Label>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    className="w-full justify-start text-left font-normal"
+                  >
+                    <CalendarIcon className="mr-2 h-4 w-4" />
+                    {dueDate ? format(dueDate, 'PPP') : <span>Pick a date</span>}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0">
+                  <Calendar
+                    mode="single"
+                    selected={dueDate}
+                    onSelect={setDueDate}
                     initialFocus
                   />
                 </PopoverContent>
@@ -236,16 +240,6 @@ export function AddLoan() {
                 type="tel"
                 value={newBorrower.phone}
                 onChange={(e) => setNewBorrower({ ...newBorrower, phone: e.target.value })}
-                required
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="newBorrowerEmail">Email</Label>
-              <Input
-                id="newBorrowerEmail"
-                type="email"
-                value={newBorrower.email}
-                onChange={(e) => setNewBorrower({ ...newBorrower, email: e.target.value })}
                 required
               />
             </div>

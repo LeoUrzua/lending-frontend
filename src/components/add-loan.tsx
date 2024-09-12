@@ -7,32 +7,26 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Calendar } from "@/components/ui/calendar"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { CalendarIcon, ArrowLeft, Loader2 } from 'lucide-react'
 import { format, addMonths } from 'date-fns'
 import toast, { Toaster } from 'react-hot-toast'
-import { getBorrowers, addBorrower, addLoan } from '@/lib/data'
-import Link from 'next/link'
+import { getBorrowers, addLoan } from '@/lib/data'
 
-interface Borrower {
-  id: string;
-  name: string;
+interface AddLoanProps {
+  borrowerId?: string;
 }
 
-export function AddLoan() {
+export function AddLoan({ borrowerId }: AddLoanProps) {
   const router = useRouter()
-  const [selectedBorrower, setSelectedBorrower] = useState('')
-  const [borrowers, setBorrowers] = useState<Borrower[]>([])
+  const [selectedBorrower, setSelectedBorrower] = useState(borrowerId || '')
+  const [borrowers, setBorrowers] = useState([])
   const [loanAmount, setLoanAmount] = useState('')
   const [interestRate, setInterestRate] = useState('')
   const [startDate, setStartDate] = useState<Date | undefined>(new Date())
   const [dueDate, setDueDate] = useState<Date | undefined>(addMonths(new Date(), 1))
-  const [isNewBorrowerDialogOpen, setIsNewBorrowerDialogOpen] = useState(false)
-  const [newBorrower, setNewBorrower] = useState({ name: '', phone: '', email: '' })
   const [isLoading, setIsLoading] = useState(false)
-  const [searchTerm, setSearchTerm] = useState('')
 
   useEffect(() => {
     const fetchBorrowersData = async () => {
@@ -64,6 +58,7 @@ export function AddLoan() {
       }
 
       await addLoan(
+        'current-user-id', // Replace with actual lender ID
         selectedBorrower,
         amount,
         rate,
@@ -80,33 +75,11 @@ export function AddLoan() {
     }
   }
 
-  const handleAddNewBorrower = async () => {
-    if (isLoading) return
-
-    setIsLoading(true)
-    try {
-      if (!newBorrower.name || !newBorrower.phone) {
-        throw new Error('Please fill in name and phone number for the new borrower')
-      }
-
-      const addedBorrower = await addBorrower(newBorrower.name, newBorrower.phone)
-      setSelectedBorrower(addedBorrower.id)
-      setBorrowers(prevBorrowers => [...prevBorrowers, addedBorrower])
-      setIsNewBorrowerDialogOpen(false)
-      setNewBorrower({ name: '', phone: '', email: '' })
-      toast.success('New borrower added successfully')
-    } catch (error) {
-      toast.error((error as Error).message)
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
   return (
     <div className="container mx-auto px-4 py-8">
       <Toaster position="top-right" />
-      <Button variant="ghost" onClick={() => router.push('/dashboard')} className="mb-4">
-        <ArrowLeft className="mr-2 h-4 w-4" /> Back to Dashboard
+      <Button variant="ghost" onClick={() => router.push('/borrowers')} className="mb-4">
+        <ArrowLeft className="mr-2 h-4 w-4" /> Back to Borrowers
       </Button>
       <Card>
         <CardHeader>
@@ -116,7 +89,7 @@ export function AddLoan() {
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="borrower">Borrower</Label>
-              <Select value={selectedBorrower} onValueChange={setSelectedBorrower}>
+              <Select value={selectedBorrower} onValueChange={setSelectedBorrower} disabled={!!borrowerId}>
                 <SelectTrigger id="borrower">
                   <SelectValue placeholder="Select a borrower" />
                 </SelectTrigger>
@@ -128,11 +101,6 @@ export function AddLoan() {
                   ))}
                 </SelectContent>
               </Select>
-              <Link href="/borrowers/add" passHref>
-                <Button type="button" variant="outline" className="mt-2">
-                  Add New Borrower
-                </Button>
-              </Link>
             </div>
             <div className="space-y-2">
               <Label htmlFor="amount">Loan Amount</Label>
@@ -206,49 +174,13 @@ export function AddLoan() {
                 {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
                 Submit
               </Button>
-              <Button type="button" variant="outline" className="flex-1" onClick={() => router.push('/dashboard')}>
+              <Button type="button" variant="outline" className="flex-1" onClick={() => router.push('/borrowers')}>
                 Cancel
               </Button>
             </div>
           </form>
         </CardContent>
       </Card>
-
-      <Dialog open={isNewBorrowerDialogOpen} onOpenChange={setIsNewBorrowerDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Add New Borrower</DialogTitle>
-            <DialogDescription>
-              Enter the details of the new borrower below.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="newBorrowerName">Name</Label>
-              <Input
-                id="newBorrowerName"
-                value={newBorrower.name}
-                onChange={(e) => setNewBorrower({ ...newBorrower, name: e.target.value })}
-                required
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="newBorrowerPhone">Phone</Label>
-              <Input
-                id="newBorrowerPhone"
-                type="tel"
-                value={newBorrower.phone}
-                onChange={(e) => setNewBorrower({ ...newBorrower, phone: e.target.value })}
-                required
-              />
-            </div>
-            <Button onClick={handleAddNewBorrower} className="w-full" disabled={isLoading}>
-              {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
-              Add Borrower
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
     </div>
   )
 }

@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Input } from "@/components/ui/input"
-import { Loader2, Plus, Search } from 'lucide-react'
+import { Loader2, Plus, Search, DollarSign } from 'lucide-react'
 import toast, { Toaster } from 'react-hot-toast'
 import { getBorrowers } from '@/lib/data'
 import Link from 'next/link'
@@ -42,6 +42,10 @@ export function BorrowerManagement() {
     borrower.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     borrower.phone_number.includes(searchTerm)
   )
+
+  const handleAddLoan = (borrowerId: string) => {
+    router.push(`/borrowers/${borrowerId}/add-loan`)
+  }
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -86,9 +90,14 @@ export function BorrowerManagement() {
                     <TableCell>{borrower.phone_number}</TableCell>
                     <TableCell>{borrower.score || 'N/A'}</TableCell>
                     <TableCell>
-                      <Button variant="outline" size="sm" onClick={() => router.push(`/borrowers/${borrower.id}`)}>
-                        View Details
-                      </Button>
+                      <div className="flex space-x-2">
+                        <Button variant="outline" size="sm" onClick={() => router.push(`/borrowers/${borrower.id}`)}>
+                          View Details
+                        </Button>
+                        <Button variant="outline" size="sm" onClick={() => handleAddLoan(borrower.id)}>
+                          <DollarSign className="mr-2 h-4 w-4" /> Add Loan
+                        </Button>
+                      </div>
                     </TableCell>
                   </TableRow>
                 ))}

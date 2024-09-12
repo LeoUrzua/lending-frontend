@@ -1,0 +1,29 @@
+CREATE TABLE IF NOT EXISTS Borrowers (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  user_id UUID,
+  name VARCHAR(255) NOT NULL,
+  phoneNumber VARCHAR(20),
+  score FLOAT,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS Loans (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  borrower_id UUID NOT NULL,
+  amount FLOAT NOT NULL,
+  interest_rate FLOAT NOT NULL,
+  start_date TIMESTAMP WITH TIME ZONE NOT NULL,
+  due_date TIMESTAMP WITH TIME ZONE NOT NULL,
+  status VARCHAR(20) NOT NULL,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (borrower_id) REFERENCES Borrowers(id)
+);
+
+CREATE TABLE IF NOT EXISTS Payments (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  loan_id UUID NOT NULL,
+  amount_paid FLOAT NOT NULL,
+  payment_date TIMESTAMP WITH TIME ZONE NOT NULL,
+  FOREIGN KEY (loan_id) REFERENCES Loans(id)
+);
+

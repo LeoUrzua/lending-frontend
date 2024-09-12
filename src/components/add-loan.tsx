@@ -13,6 +13,7 @@ import { CalendarIcon, ArrowLeft, Loader2 } from 'lucide-react'
 import { format, addMonths } from 'date-fns'
 import toast, { Toaster } from 'react-hot-toast'
 import { getBorrowers, addLoan } from '@/lib/data'
+import Link from 'next/link'
 
 interface AddLoanProps {
   borrowerId?: string;
@@ -57,14 +58,14 @@ export function AddLoan({ borrowerId }: AddLoanProps) {
         throw new Error('Amount and interest rate must be greater than zero')
       }
 
-      await addLoan(
-        'current-user-id', // Replace with actual lender ID
-        selectedBorrower,
+      await addLoan({
+        borrowerId: selectedBorrower,
         amount,
-        rate,
+        interestRate: rate,
         startDate,
         dueDate,
-        'Active'
+        status: 'Active'
+      }
       )
       toast.success('Loan added successfully')
       router.push('/dashboard')
@@ -101,6 +102,12 @@ export function AddLoan({ borrowerId }: AddLoanProps) {
                   ))}
                 </SelectContent>
               </Select>
+              {!borrowerId && (             
+                 <Link href="/borrowers/add" passHref>
+                    <Button type="button" variant="outline" className="mt-2">
+                      Add New Borrower
+                    </Button>
+                 </Link>)}
             </div>
             <div className="space-y-2">
               <Label htmlFor="amount">Loan Amount</Label>

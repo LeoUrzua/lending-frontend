@@ -17,7 +17,23 @@ export async function addBorrower(name: string, phoneNumber: string, score?: num
     return data
 }
 
-export async function addLoan(borrowerId: string, amount: number, interestRate: number, startDate: Date, dueDate: Date, status: string) {
+interface AddLoanDTO {
+    borrowerId: string;
+    amount: number;
+    interestRate: number;
+    startDate: Date;
+    dueDate: Date;
+    status: string;
+}
+
+export async function addLoan({
+    borrowerId,
+    amount,
+    interestRate,
+    startDate,
+    dueDate,
+    status,
+}: AddLoanDTO) {
     const { data, error } = await supabase
         .from('loans')
         .insert({
@@ -48,7 +64,6 @@ export async function getLoans() {
 
     if (error) throw error;
 
-    // Map the result into the desired Loan interface format
     const loans = data.map((loan) => ({
         id: loan.id,
         borrowerName: loan.borrower.name,
@@ -58,6 +73,6 @@ export async function getLoans() {
         dueDate: loan.due_date,
         status: loan.status,
     }));
-    
+
     return loans;
 }

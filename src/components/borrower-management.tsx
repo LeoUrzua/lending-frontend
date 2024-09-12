@@ -1,12 +1,11 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Input } from "@/components/ui/input"
-import { Loader2, Plus, Search, DollarSign } from 'lucide-react'
+import { Loader2, Plus, Search, DollarSign, User, ArrowLeft } from 'lucide-react'
 import toast, { Toaster } from 'react-hot-toast'
 import { getBorrowers } from '@/lib/data'
 import Link from 'next/link'
@@ -14,12 +13,11 @@ import Link from 'next/link'
 interface Borrower {
   id: string;
   name: string;
-  phone_number: string;
+  phoneNumber: string;
   score?: number;
 }
 
 export function BorrowerManagement() {
-  const router = useRouter()
   const [borrowers, setBorrowers] = useState<Borrower[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
@@ -40,15 +38,22 @@ export function BorrowerManagement() {
 
   const filteredBorrowers = borrowers.filter(borrower =>
     borrower.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    borrower.phone_number.includes(searchTerm)
+    borrower.phoneNumber.includes(searchTerm)
   )
 
-  const handleAddLoan = (borrowerId: string) => {
-    router.push(`/borrowers/${borrowerId}/add-loan`)
+  const getScoreColor = (score: number) => {
+    if (score >= 80) return 'text-green-600'
+    if (score >= 60) return 'text-yellow-600'
+    return 'text-red-600'
   }
 
   return (
     <div className="container mx-auto px-4 py-8">
+      <Link href="/" passHref>
+        <Button variant="outline" className="mb-4">
+          <ArrowLeft className="mr-2 h-4 w-4" /> Back to Main
+        </Button>
+      </Link>
       <Toaster position="top-right" />
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -87,16 +92,23 @@ export function BorrowerManagement() {
                 {filteredBorrowers.map((borrower) => (
                   <TableRow key={borrower.id}>
                     <TableCell className="font-medium">{borrower.name}</TableCell>
-                    <TableCell>{borrower.phone_number}</TableCell>
-                    <TableCell>{borrower.score || 'N/A'}</TableCell>
+                    <TableCell>{borrower.phoneNumber}</TableCell>
+                    <TableCell className={getScoreColor(borrower.score || 0)}>
+                    {borrower.score}
+                  </TableCell>
                     <TableCell>
                       <div className="flex space-x-2">
-                        <Button variant="outline" size="sm" onClick={() => router.push(`/borrowers/${borrower.id}`)}>
-                          View Details
-                        </Button>
-                        <Button variant="outline" size="sm" onClick={() => handleAddLoan(borrower.id)}>
-                          <DollarSign className="mr-2 h-4 w-4" /> Add Loan
-                        </Button>
+                        <Link href={`/borrowers/${borrower.id}`} passHref>
+                          <Button variant="outline" size="sm">
+                            <User className="mr-2 h-4 w-4" />
+                            View Profile
+                          </Button>
+                        </Link>
+                        <Link href={`/borrowers/${borrower.id}/add-loan`} passHref>
+                          <Button variant="outline" size="sm">
+                            <DollarSign className="mr-2 h-4 w-4" /> Add Loan
+                          </Button>
+                        </Link>
                       </div>
                     </TableCell>
                   </TableRow>

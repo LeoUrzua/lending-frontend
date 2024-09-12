@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Download } from 'lucide-react'
+import { ArrowLeft, Download } from 'lucide-react'
 import { Bar, Pie } from 'react-chartjs-2'
 import {
   Chart as ChartJS,
@@ -18,6 +18,7 @@ import {
   Legend,
   ArcElement
 } from 'chart.js'
+import Link from 'next/link'
 
 ChartJS.register(
   CategoryScale,
@@ -120,6 +121,11 @@ export function ReportingInsights() {
 
   return (
     <div className="container mx-auto p-4">
+      <Link href="/" passHref>
+        <Button variant="outline" className="mb-4">
+          <ArrowLeft className="mr-2 h-4 w-4" /> Back to Main
+        </Button>
+      </Link>
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-2xl font-bold">Reporting & Insights</CardTitle>

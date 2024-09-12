@@ -1,10 +1,9 @@
-import { BorrowerProfile } from "@/components/borrower-profile";
+import { BorrowerProfile } from "@/components/borrower-profile"
 
-
-export default function Home() {
+export default function BorrowerProfilePage({ params }: { params: { id: string } }) {
   return (
-    <div>
-      <BorrowerProfile />
+    <div className="min-h-screen bg-background">
+      <BorrowerProfile borrowerId={params.id} />
     </div>
-  );
+  )
 }

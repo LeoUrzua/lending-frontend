@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Input } from "@/components/ui/input"
-import { Loader2, Plus, Search } from 'lucide-react'
+import { ArrowLeft, Edit, Loader2, Plus, Search, Trash2 } from 'lucide-react'
 import toast, { Toaster } from 'react-hot-toast'
 import { getLoans } from '@/lib/data'
 import Link from 'next/link'
@@ -46,8 +46,18 @@ export function LoanManagement() {
     loan.status.toLowerCase().includes(searchTerm.toLowerCase())
   )
 
+  function handleDeleteLoan(id: string): void {
+    console.log('Delete loan with ID:', id);
+    throw new Error('Function not implemented.')
+  }
+
   return (
     <div className="container mx-auto px-4 py-8">
+      <Link href="/" passHref>
+        <Button variant="outline" className="mb-4">
+          <ArrowLeft className="mr-2 h-4 w-4" /> Back to Main
+        </Button>
+      </Link>
       <Toaster position="top-right" />
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -93,12 +103,24 @@ export function LoanManagement() {
                     <TableCell>{loan.interestRate}%</TableCell>
                     <TableCell>{new Date(loan.startDate).toLocaleDateString()}</TableCell>
                     <TableCell>{new Date(loan.dueDate).toLocaleDateString()}</TableCell>
-                    <TableCell>{loan.status}</TableCell>
                     <TableCell>
-                      <Button variant="outline" size="sm" onClick={() => router.push(`/loans/${loan.id}`)}>
-                        View Details
-                      </Button>
-                    </TableCell>
+                      <span className={`px-2 py-1 rounded-full text-xs font-semibold ${
+                        loan.status === 'Active' ? 'bg-green-100 text-green-800' :
+                        loan.status === 'Late' ? 'bg-yellow-100 text-yellow-800' :
+                        'bg-red-100 text-red-800'
+                      }`}>
+                        {loan.status}
+                      </span>
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex space-x-2">
+                      <Link href={`/loans/${loan.id}`} passHref>
+                        <Button variant="outline" size="sm">View</Button>
+                      </Link>
+                      <Button variant="outline" size="sm"><Edit className="h-4 w-4" /></Button>
+                      <Button variant="outline" size="sm" onClick={() => handleDeleteLoan(loan.id)}><Trash2 className="h-4 w-4" /></Button>
+                    </div>
+                  </TableCell>
                   </TableRow>
                 ))}
               </TableBody>

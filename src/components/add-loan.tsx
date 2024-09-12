@@ -64,7 +64,6 @@ export function AddLoan() {
       }
 
       await addLoan(
-        'current-user-id', // Replace with actual lender ID
         selectedBorrower,
         amount,
         rate,

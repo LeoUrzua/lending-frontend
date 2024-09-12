@@ -17,11 +17,10 @@ export async function addBorrower(name: string, phoneNumber: string, score?: num
     return data
 }
 
-export async function addLoan(lenderId: string, borrowerId: string, amount: number, interestRate: number, startDate: Date, dueDate: Date, status: string) {
+export async function addLoan(borrowerId: string, amount: number, interestRate: number, startDate: Date, dueDate: Date, status: string) {
     const { data, error } = await supabase
-        .from('Loans')
+        .from('loans')
         .insert({
-            lender_id: lenderId,
             borrower_id: borrowerId,
             amount,
             interest_rate: interestRate,

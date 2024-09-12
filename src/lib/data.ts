@@ -32,3 +32,32 @@ export async function addLoan(borrowerId: string, amount: number, interestRate: 
     if (error) throw error
     return data
 }
+
+export async function getLoans() {
+    const { data, error } = await supabase
+        .from('loans')
+        .select(`
+            id,
+            amount,
+            interest_rate,
+            start_date,
+            due_date,
+            status,
+            borrower: borrower_id (name)
+        `);
+
+    if (error) throw error;
+
+    // Map the result into the desired Loan interface format
+    const loans = data.map((loan) => ({
+        id: loan.id,
+        borrowerName: loan.borrower.name,
+        amount: loan.amount,
+        interestRate: loan.interest_rate,
+        startDate: loan.start_date,
+        dueDate: loan.due_date,
+        status: loan.status,
+    }));
+    
+    return loans;
+}

@@ -18,47 +18,47 @@ const topBorrowers = [
 export function Dashboard() {
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-6">Loan Management Dashboard</h1>
+      <h1 className="text-3xl font-bold mb-6">Panel de Gestión de Préstamos</h1>
       
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Lent</CardTitle>
+            <CardTitle className="text-sm font-medium">Total Prestado</CardTitle>
             <DollarSign className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">$1,234,567</div>
-            <p className="text-xs text-muted-foreground">+20.1% from last month</p>
+            <p className="text-xs text-muted-foreground">+20.1% desde el mes pasado</p>
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Interest Earned</CardTitle>
+            <CardTitle className="text-sm font-medium">Intereses Ganados</CardTitle>
             <DollarSign className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">$98,765</div>
-            <p className="text-xs text-muted-foreground">+5.4% from last month</p>
+            <p className="text-xs text-muted-foreground">+5.4% desde el mes pasado</p>
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Overdue Payments</CardTitle>
+            <CardTitle className="text-sm font-medium">Pagos Atrasados</CardTitle>
             <DollarSign className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-red-600">$12,345</div>
-            <p className="text-xs text-muted-foreground">3.2% of total lent</p>
+            <p className="text-xs text-muted-foreground">3.2% del total prestado</p>
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Active Loans</CardTitle>
+            <CardTitle className="text-sm font-medium">Préstamos Activos</CardTitle>
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-green-600">152</div>
-            <p className="text-xs text-muted-foreground">+12 from last month</p>
+            <p className="text-xs text-muted-foreground">+12 desde el mes pasado</p>
           </CardContent>
         </Card>
       </div>
@@ -66,7 +66,7 @@ export function Dashboard() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
         <Card>
           <CardHeader>
-            <CardTitle>Top Borrowers by Performance</CardTitle>
+            <CardTitle>Mejores Prestatarios por Desempeño</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
@@ -78,7 +78,7 @@ export function Dashboard() {
                   </Avatar>
                   <div className="ml-4 space-y-1">
                     <p className="text-sm font-medium leading-none">{borrower.name}</p>
-                    <p className="text-sm text-muted-foreground">Score: {borrower.score}</p>
+                    <p className="text-sm text-muted-foreground">Puntuación: {borrower.score}</p>
                   </div>
                   <div className="ml-auto font-medium">
                     <Progress value={borrower.score} className="w-[60px]" />
@@ -90,23 +90,23 @@ export function Dashboard() {
         </Card>
         <Card>
           <CardHeader>
-            <CardTitle>Loan Status Overview</CardTitle>
+            <CardTitle>Visión General de los Préstamos</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
               <div className="flex items-center">
                 <div className="w-2 h-2 rounded-full bg-green-500 mr-2" />
-                <span className="text-sm font-medium">Active Loans</span>
+                <span className="text-sm font-medium">Préstamos Activos</span>
                 <span className="ml-auto text-sm font-medium">70%</span>
               </div>
               <div className="flex items-center">
                 <div className="w-2 h-2 rounded-full bg-yellow-500 mr-2" />
-                <span className="text-sm font-medium">Pending Approval</span>
+                <span className="text-sm font-medium">Pendientes de Aprobación</span>
                 <span className="ml-auto text-sm font-medium">20%</span>
               </div>
               <div className="flex items-center">
                 <div className="w-2 h-2 rounded-full bg-red-500 mr-2" />
-                <span className="text-sm font-medium">Overdue</span>
+                <span className="text-sm font-medium">Atrasados</span>
                 <span className="ml-auto text-sm font-medium">10%</span>
               </div>
             </div>
@@ -117,22 +117,22 @@ export function Dashboard() {
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         <Link href="/add-loan" passHref>
           <Button className="w-full">
-            <PlusCircle className="mr-2 h-4 w-4" /> Add Loan
+            <PlusCircle className="mr-2 h-4 w-4" /> Añadir Préstamo
           </Button>
         </Link>
         <Link href="/reports" passHref>
           <Button className="w-full">
-            <BarChart className="mr-2 h-4 w-4" /> View Reports
+            <BarChart className="mr-2 h-4 w-4" /> Ver Reportes
           </Button>
         </Link>
         <Link href="/borrowers" passHref>
           <Button className="w-full">
-            <Users className="mr-2 h-4 w-4" /> Manage Borrowers
+            <Users className="mr-2 h-4 w-4" /> Gestionar Prestatarios
           </Button>
         </Link>
         <Link href="/loans" passHref>
           <Button className="w-full">
-            <FileText className="mr-2 h-4 w-4" /> Manage Loans
+            <FileText className="mr-2 h-4 w-4" /> Gestionar Préstamos
           </Button>
         </Link>
       </div>

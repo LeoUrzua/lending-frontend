@@ -24,13 +24,13 @@ export default function AddBorrowerForm() {
     setIsLoading(true)
     try {
       if (!name || !phoneNumber) {
-        throw new Error('Please fill in all required fields')
+        throw new Error('Por favor complete todos los campos requeridos')
       }
 
       const scoreValue = score ? parseFloat(score) : null
 
       await addBorrower(name, phoneNumber, scoreValue)
-      toast.success('Borrower added successfully')
+      toast.success('Prestatario añadido con éxito')
       router.push('/borrowers')
     } catch (error) {
       toast.error((error as Error).message)
@@ -44,7 +44,7 @@ export default function AddBorrowerForm() {
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="name">Name *</Label>
+            <Label htmlFor="name">Nombre *</Label>
             <Input
               id="name"
               value={name}
@@ -53,7 +53,7 @@ export default function AddBorrowerForm() {
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="phoneNumber">Phone Number *</Label>
+            <Label htmlFor="phoneNumber">Número de Teléfono *</Label>
             <Input
               id="phoneNumber"
               type="tel"
@@ -63,7 +63,7 @@ export default function AddBorrowerForm() {
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="score">Score</Label>
+            <Label htmlFor="score">Puntuación</Label>
             <Input
               id="score"
               type="number"
@@ -77,10 +77,10 @@ export default function AddBorrowerForm() {
               {isLoading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Adding...
+                  Añadiendo...
                 </>
               ) : (
-                'Add Borrower'
+                'Añadir Prestatario'
               )}
             </Button>
           </div>

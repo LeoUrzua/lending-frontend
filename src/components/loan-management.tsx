@@ -33,7 +33,7 @@ export function LoanManagement() {
         const data = await getLoans()
         setLoans(data)
       } catch (error) {
-        toast.error('Failed to fetch loans')
+        toast.error('Error al obtener los préstamos')
       } finally {
         setIsLoading(false)
       }
@@ -47,24 +47,24 @@ export function LoanManagement() {
   )
 
   function handleDeleteLoan(id: string): void {
-    console.log('Delete loan with ID:', id);
-    throw new Error('Function not implemented.')
+    console.log('Eliminar préstamo con ID:', id);
+    throw new Error('Función no implementada.')
   }
 
   return (
     <div className="container mx-auto px-4 py-8">
       <Link href="/" passHref>
         <Button variant="outline" className="mb-4">
-          <ArrowLeft className="mr-2 h-4 w-4" /> Back to Main
+          <ArrowLeft className="mr-2 h-4 w-4" /> Volver al Inicio
         </Button>
       </Link>
       <Toaster position="top-right" />
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-2xl font-bold">Loan Management</CardTitle>
+          <CardTitle className="text-2xl font-bold">Gestión de Préstamos</CardTitle>
           <Link href="/add-loan" passHref>
             <Button>
-              <Plus className="mr-2 h-4 w-4" /> Add Loan
+              <Plus className="mr-2 h-4 w-4" /> Añadir Préstamo
             </Button>
           </Link>
         </CardHeader>
@@ -72,7 +72,7 @@ export function LoanManagement() {
           <div className="flex items-center space-x-2 mb-4">
             <Search className="w-4 h-4 text-gray-500" />
             <Input
-              placeholder="Search loans..."
+              placeholder="Buscar préstamos..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="max-w-sm"
@@ -86,13 +86,13 @@ export function LoanManagement() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Borrower</TableHead>
-                  <TableHead>Amount</TableHead>
-                  <TableHead>Interest Rate</TableHead>
-                  <TableHead>Start Date</TableHead>
-                  <TableHead>Due Date</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Actions</TableHead>
+                  <TableHead>Prestatario</TableHead>
+                  <TableHead>Monto</TableHead>
+                  <TableHead>Tasa de Interés</TableHead>
+                  <TableHead>Fecha de Inicio</TableHead>
+                  <TableHead>Fecha de Vencimiento</TableHead>
+                  <TableHead>Estado</TableHead>
+                  <TableHead>Acciones</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -109,18 +109,18 @@ export function LoanManagement() {
                         loan.status === 'Late' ? 'bg-yellow-100 text-yellow-800' :
                         'bg-red-100 text-red-800'
                       }`}>
-                        {loan.status}
+                        {loan.status === 'Active' ? 'Activo' : loan.status === 'Late' ? 'Atrasado' : 'Completado'}
                       </span>
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex space-x-2">
-                      <Link href={`/loans/${loan.id}`} passHref>
-                        <Button variant="outline" size="sm">View</Button>
-                      </Link>
-                      <Button variant="outline" size="sm"><Edit className="h-4 w-4" /></Button>
-                      <Button variant="outline" size="sm" onClick={() => handleDeleteLoan(loan.id)}><Trash2 className="h-4 w-4" /></Button>
-                    </div>
-                  </TableCell>
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex space-x-2">
+                        <Link href={`/loans/${loan.id}`} passHref>
+                          <Button variant="outline" size="sm">Ver</Button>
+                        </Link>
+                        <Button variant="outline" size="sm"><Edit className="h-4 w-4" /></Button>
+                        <Button variant="outline" size="sm" onClick={() => handleDeleteLoan(loan.id)}><Trash2 className="h-4 w-4" /></Button>
+                      </div>
+                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>

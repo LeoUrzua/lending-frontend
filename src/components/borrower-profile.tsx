@@ -43,7 +43,7 @@ export function BorrowerProfile({ borrowerId }: BorrowerProfileProps) {
         const loansData = await getLoansByBorrowerId(borrowerId)
         setLoans(loansData)
       } catch (error) {
-        toast.error('Failed to fetch borrower data')
+        toast.error('Error al obtener los datos del prestatario')
       } finally {
         setIsLoading(false)
       }
@@ -68,7 +68,7 @@ export function BorrowerProfile({ borrowerId }: BorrowerProfileProps) {
   }
 
   if (!borrower) {
-    return <div>Borrower not found</div>
+    return <div>Prestatario no encontrado</div>
   }
 
   return (
@@ -76,29 +76,29 @@ export function BorrowerProfile({ borrowerId }: BorrowerProfileProps) {
       <Toaster position="top-right" />
       <Link href="/borrowers" passHref>
         <Button variant="outline" className="mb-4">
-          <ArrowLeft className="mr-2 h-4 w-4" /> Back to Borrower Management
+          <ArrowLeft className="mr-2 h-4 w-4" /> Volver a Gestión de Prestatarios
         </Button>
       </Link>
       <Card className="mb-6">
         <CardHeader>
-          <CardTitle className="text-2xl font-bold">Borrower Profile: {borrower.name}</CardTitle>
+          <CardTitle className="text-2xl font-bold">Perfil del Prestatario: {borrower.name}</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 gap-4">
             <div>
               <h3 className="font-semibold flex items-center">
-                <Mail className="mr-2 h-4 w-4" /> Email
+                <Mail className="mr-2 h-4 w-4" /> Correo Electrónico
               </h3>
               <p>{borrower.email}</p>
             </div>
             <div>
               <h3 className="font-semibold flex items-center">
-                <Phone className="mr-2 h-4 w-4" /> Phone
+                <Phone className="mr-2 h-4 w-4" /> Teléfono
               </h3>
               <p>{borrower.phoneNumber}</p>
             </div>
             <div>
-              <h3 className="font-semibold">Performance Score</h3>
+              <h3 className="font-semibold">Puntuación de Desempeño</h3>
               <p className={getScoreColor(borrower.score)}>{borrower.score !== null ? borrower.score : 'N/A'}</p>
             </div>
           </div>
@@ -106,16 +106,16 @@ export function BorrowerProfile({ borrowerId }: BorrowerProfileProps) {
       </Card>
       <Card>
         <CardHeader>
-          <CardTitle className="text-xl font-bold">Loan History</CardTitle>
+          <CardTitle className="text-xl font-bold">Historial de Préstamos</CardTitle>
         </CardHeader>
         <CardContent>
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Amount</TableHead>
-                <TableHead>Start Date</TableHead>
-                <TableHead>End Date</TableHead>
-                <TableHead>Status</TableHead>
+                <TableHead>Monto</TableHead>
+                <TableHead>Fecha de Inicio</TableHead>
+                <TableHead>Fecha de Vencimiento</TableHead>
+                <TableHead>Estado</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -130,7 +130,8 @@ export function BorrowerProfile({ borrowerId }: BorrowerProfileProps) {
                       loan.status.toLowerCase() === 'active' ? 'bg-blue-100 text-blue-800' :
                       'bg-yellow-100 text-yellow-800'
                     }`}>
-                      {loan.status}
+                      {loan.status === 'completed' ? 'Completado' : 
+                       loan.status === 'active' ? 'Activo' : 'Pendiente'}
                     </span>
                   </TableCell>
                 </TableRow>
@@ -142,3 +143,4 @@ export function BorrowerProfile({ borrowerId }: BorrowerProfileProps) {
     </div>
   )
 }
+

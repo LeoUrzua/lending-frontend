@@ -10,11 +10,11 @@ export default function AddBorrowerPage() {
         <Button variant="ghost" asChild>
           <Link href="/borrowers" className="flex items-center">
             <ArrowLeft className="mr-2 h-4 w-4" />
-            Back to Borrowers
+            Volver a Prestatarios
           </Link>
         </Button>
       </div>
-      <h1 className="text-2xl font-bold mb-6">Add New Borrower</h1>
+      <h1 className="text-2xl font-bold mb-6">Añadir Nuevo Prestatario</h1>
       <AddBorrowerForm />
     </div>
   )

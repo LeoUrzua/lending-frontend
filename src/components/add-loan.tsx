@@ -35,7 +35,7 @@ export function AddLoan({ borrowerId }: AddLoanProps) {
         const data = await getBorrowers()
         setBorrowers(data)
       } catch (error) {
-        toast.error('Failed to fetch borrowers')
+        toast.error('No se pudo obtener la lista de prestatarios')
       }
     }
     fetchBorrowersData()
@@ -48,14 +48,14 @@ export function AddLoan({ borrowerId }: AddLoanProps) {
     setIsLoading(true)
     try {
       if (!selectedBorrower || !loanAmount || !interestRate || !startDate || !dueDate) {
-        throw new Error('Please fill in all fields')
+        throw new Error('Por favor complete todos los campos')
       }
 
       const amount = parseFloat(loanAmount)
       const rate = parseFloat(interestRate)
 
       if (amount <= 0 || rate <= 0) {
-        throw new Error('Amount and interest rate must be greater than zero')
+        throw new Error('El monto y la tasa de interés deben ser mayores a cero')
       }
 
       await addLoan({
@@ -67,7 +67,7 @@ export function AddLoan({ borrowerId }: AddLoanProps) {
         status: 'Active'
       }
       )
-      toast.success('Loan added successfully')
+      toast.success('Préstamo añadido con éxito')
       router.push('/dashboard')
     } catch (error) {
       toast.error((error as Error).message)
@@ -80,19 +80,19 @@ export function AddLoan({ borrowerId }: AddLoanProps) {
     <div className="container mx-auto px-4 py-8">
       <Toaster position="top-right" />
       <Button variant="ghost" onClick={() => router.push('/borrowers')} className="mb-4">
-        <ArrowLeft className="mr-2 h-4 w-4" /> Back to Borrowers
+        <ArrowLeft className="mr-2 h-4 w-4" /> Volver a Prestatarios
       </Button>
       <Card>
         <CardHeader>
-          <CardTitle className="text-2xl font-bold">Add New Loan</CardTitle>
+          <CardTitle className="text-2xl font-bold">Añadir Nuevo Préstamo</CardTitle>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="borrower">Borrower</Label>
+              <Label htmlFor="borrower">Prestatario</Label>
               <Select value={selectedBorrower} onValueChange={setSelectedBorrower} disabled={!!borrowerId}>
                 <SelectTrigger id="borrower">
-                  <SelectValue placeholder="Select a borrower" />
+                  <SelectValue placeholder="Seleccione un prestatario" />
                 </SelectTrigger>
                 <SelectContent>
                   {borrowers.map((borrower) => (
@@ -105,35 +105,35 @@ export function AddLoan({ borrowerId }: AddLoanProps) {
               {!borrowerId && (             
                  <Link href="/borrowers/add" passHref>
                     <Button type="button" variant="outline" className="mt-2">
-                      Add New Borrower
+                      Añadir Nuevo Prestatario
                     </Button>
                  </Link>)}
             </div>
             <div className="space-y-2">
-              <Label htmlFor="amount">Loan Amount</Label>
+              <Label htmlFor="amount">Monto del Préstamo</Label>
               <Input
                 id="amount"
                 type="number"
-                placeholder="Enter loan amount"
+                placeholder="Ingrese el monto del préstamo"
                 value={loanAmount}
                 onChange={(e) => setLoanAmount(e.target.value)}
                 required
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="interestRate">Interest Rate (%)</Label>
+              <Label htmlFor="interestRate">Tasa de Interés (%)</Label>
               <Input
                 id="interestRate"
                 type="number"
                 step="0.01"
-                placeholder="Enter interest rate"
+                placeholder="Ingrese la tasa de interés"
                 value={interestRate}
                 onChange={(e) => setInterestRate(e.target.value)}
                 required
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="startDate">Start Date</Label>
+              <Label htmlFor="startDate">Fecha de Inicio</Label>
               <Popover>
                 <PopoverTrigger asChild>
                   <Button
@@ -141,7 +141,7 @@ export function AddLoan({ borrowerId }: AddLoanProps) {
                     className="w-full justify-start text-left font-normal"
                   >
                     <CalendarIcon className="mr-2 h-4 w-4" />
-                    {startDate ? format(startDate, 'PPP') : <span>Pick a date</span>}
+                    {startDate ? format(startDate, 'PPP') : <span>Seleccione una fecha</span>}
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-auto p-0">
@@ -155,7 +155,7 @@ export function AddLoan({ borrowerId }: AddLoanProps) {
               </Popover>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="dueDate">Due Date</Label>
+              <Label htmlFor="dueDate">Fecha de Vencimiento</Label>
               <Popover>
                 <PopoverTrigger asChild>
                   <Button
@@ -163,7 +163,7 @@ export function AddLoan({ borrowerId }: AddLoanProps) {
                     className="w-full justify-start text-left font-normal"
                   >
                     <CalendarIcon className="mr-2 h-4 w-4" />
-                    {dueDate ? format(dueDate, 'PPP') : <span>Pick a date</span>}
+                    {dueDate ? format(dueDate, 'PPP') : <span>Seleccione una fecha</span>}
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-auto p-0">
@@ -179,10 +179,10 @@ export function AddLoan({ borrowerId }: AddLoanProps) {
             <div className="flex space-x-2 pt-4">
               <Button type="submit" className="flex-1" disabled={isLoading}>
                 {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
-                Submit
+                Enviar
               </Button>
               <Button type="button" variant="outline" className="flex-1" onClick={() => router.push('/borrowers')}>
-                Cancel
+                Cancelar
               </Button>
             </div>
           </form>

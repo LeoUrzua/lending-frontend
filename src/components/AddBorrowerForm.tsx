@@ -27,7 +27,7 @@ export default function AddBorrowerForm() {
         throw new Error('Por favor complete todos los campos requeridos')
       }
 
-      const scoreValue = score ? parseFloat(score) : null
+      const scoreValue = score ? parseFloat(score) : undefined
 
       await addBorrower(name, phoneNumber, scoreValue)
       toast.success('Prestatario añadido con éxito')

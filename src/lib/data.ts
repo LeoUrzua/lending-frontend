@@ -10,9 +10,10 @@ interface AddLoanDTO {
     status: string;
 }
 
-interface Borrower {
+export interface Borrower {
     id: string;
     name: string;
+    email: string;
     phoneNumber: string;
     score: number;
 }

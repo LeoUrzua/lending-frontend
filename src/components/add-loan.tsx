@@ -12,7 +12,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { CalendarIcon, ArrowLeft, Loader2 } from 'lucide-react'
 import { format, addMonths } from 'date-fns'
 import toast, { Toaster } from 'react-hot-toast'
-import { getBorrowers, addLoan } from '@/lib/data'
+import { getBorrowers, addLoan, Borrower } from '@/lib/data'
 import Link from 'next/link'
 
 interface AddLoanProps {
@@ -22,7 +22,7 @@ interface AddLoanProps {
 export function AddLoan({ borrowerId }: AddLoanProps) {
   const router = useRouter()
   const [selectedBorrower, setSelectedBorrower] = useState(borrowerId || '')
-  const [borrowers, setBorrowers] = useState([])
+  const [borrowers, setBorrowers] = useState<Borrower[]>([])
   const [loanAmount, setLoanAmount] = useState('')
   const [interestRate, setInterestRate] = useState('')
   const [startDate, setStartDate] = useState<Date | undefined>(new Date())

@@ -6,16 +6,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { ArrowLeft, Mail, Phone, Loader2 } from 'lucide-react'
 import Link from 'next/link'
-import { getBorrower, getLoansByBorrowerId } from '@/lib/data'
+import { Borrower, getBorrower, getLoansByBorrowerId } from '@/lib/data'
 import toast, { Toaster } from 'react-hot-toast'
-
-interface Borrower {
-  id: string
-  name: string
-  email: string
-  phoneNumber: string
-  score: number | null
-}
 
 interface Loan {
   id: string

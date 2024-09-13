@@ -30,20 +30,6 @@ const fetchLoanDetails = (id: number) => {
 }
 
 export function LoanDetails() {
-  // const router = useRouter()
-  // const [loan, setLoan] = useState(null)
-
-  // useEffect(() => {
-  //   if (router.isReady) {
-  //     const { id } = router.query
-  //     const loanData = fetchLoanDetails(Number(id))
-  //     setLoan(loanData)
-  //   }
-  // }, [router.isReady, router.query])
-
-  // if (!loan) {
-  //   return <div className="container mx-auto p-4">Loading...</div>
-  // }
   const loan = fetchLoanDetails(1);
 
   const getStatusColor = (status: string) => {

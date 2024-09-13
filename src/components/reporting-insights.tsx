@@ -30,26 +30,26 @@ ChartJS.register(
   ArcElement
 )
 
-// Mock data for cash flow
+// Datos ficticios para el flujo de caja
 const cashFlowData = {
-  labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+  labels: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun'],
   datasets: [
     {
-      label: 'Income',
+      label: 'Ingresos',
       data: [12000, 19000, 15000, 22000, 18000, 24000],
       backgroundColor: 'rgba(75, 192, 192, 0.6)',
     },
     {
-      label: 'Expenses',
+      label: 'Gastos',
       data: [8000, 10000, 9000, 11000, 10000, 12000],
       backgroundColor: 'rgba(255, 99, 132, 0.6)',
     },
   ],
 }
 
-// Mock data for overdue loans
+// Datos ficticios para préstamos vencidos
 const overdueLoanData = {
-  labels: ['1-30 days', '31-60 days', '61-90 days', '90+ days'],
+  labels: ['1-30 días', '31-60 días', '61-90 días', '90+ días'],
   datasets: [
     {
       data: [5000, 3000, 2000, 1000],
@@ -68,8 +68,8 @@ export function ReportingInsights() {
   const [reportType, setReportType] = useState('cashFlow')
 
   const handleDownload = () => {
-    // In a real application, this would generate and download the report
-    alert('Downloading report...')
+    // En una aplicación real, esto generaría y descargaría el informe
+    alert('Descargando informe...')
   }
 
   const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -85,7 +85,7 @@ export function ReportingInsights() {
       },
       title: {
         display: true,
-        text: 'Cash Flow',
+        text: 'Flujo de Caja',
       },
     },
     scales: {
@@ -93,14 +93,14 @@ export function ReportingInsights() {
         type: 'category' as const,
         title: {
           display: true,
-          text: 'Month',
+          text: 'Mes',
         },
       },
       y: {
         type: 'linear' as const,
         title: {
           display: true,
-          text: 'Amount ($)',
+          text: 'Monto ($)',
         },
       },
     },
@@ -114,7 +114,7 @@ export function ReportingInsights() {
       },
       title: {
         display: true,
-        text: 'Overdue Loans by Age',
+        text: 'Préstamos Vencidos por Edad',
       },
     },
   }
@@ -123,14 +123,14 @@ export function ReportingInsights() {
     <div className="container mx-auto p-4">
       <Link href="/" passHref>
         <Button variant="outline" className="mb-4">
-          <ArrowLeft className="mr-2 h-4 w-4" /> Back to Main
+          <ArrowLeft className="mr-2 h-4 w-4" /> Volver al Inicio
         </Button>
       </Link>
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-2xl font-bold">Reporting & Insights</CardTitle>
+          <CardTitle className="text-2xl font-bold">Reportes y Análisis</CardTitle>
           <Button onClick={handleDownload}>
-            <Download className="mr-2 h-4 w-4" /> Download Report
+            <Download className="mr-2 h-4 w-4" /> Descargar Informe
           </Button>
         </CardHeader>
         <CardContent>
@@ -138,16 +138,16 @@ export function ReportingInsights() {
             <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
               <Select value={reportType} onValueChange={setReportType}>
                 <SelectTrigger className="w-[180px]">
-                  <SelectValue placeholder="Select report type" />
+                  <SelectValue placeholder="Seleccionar tipo de informe" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="cashFlow">Cash Flow</SelectItem>
-                  <SelectItem value="overdueLoans">Overdue Loans</SelectItem>
+                  <SelectItem value="cashFlow">Flujo de Caja</SelectItem>
+                  <SelectItem value="overdueLoans">Préstamos Vencidos</SelectItem>
                 </SelectContent>
               </Select>
               <div className="flex space-x-2">
                 <div>
-                  <Label htmlFor="dateFrom">From</Label>
+                  <Label htmlFor="dateFrom">Desde</Label>
                   <Input
                     id="dateFrom"
                     name="from"
@@ -157,7 +157,7 @@ export function ReportingInsights() {
                   />
                 </div>
                 <div>
-                  <Label htmlFor="dateTo">To</Label>
+                  <Label htmlFor="dateTo">Hasta</Label>
                   <Input
                     id="dateTo"
                     name="to"
@@ -171,12 +171,12 @@ export function ReportingInsights() {
           </div>
           {reportType === 'cashFlow' ? (
             <div>
-              <h3 className="text-lg font-semibold mb-4">Cash Flow</h3>
+              <h3 className="text-lg font-semibold mb-4">Flujo de Caja</h3>
               <Bar data={cashFlowData} options={cashFlowOptions} />
             </div>
           ) : (
             <div>
-              <h3 className="text-lg font-semibold mb-4">Overdue Loans</h3>
+              <h3 className="text-lg font-semibold mb-4">Préstamos Vencidos</h3>
               <div className="w-full md:w-1/2 mx-auto">
                 <Pie data={overdueLoanData} options={overdueLoanOptions} />
               </div>
@@ -187,3 +187,4 @@ export function ReportingInsights() {
     </div>
   )
 }
+

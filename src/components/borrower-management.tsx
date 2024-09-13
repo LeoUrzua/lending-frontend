@@ -28,7 +28,7 @@ export function BorrowerManagement() {
         const data = await getBorrowers()
         setBorrowers(data)
       } catch (error) {
-        toast.error('Failed to fetch borrowers')
+        toast.error('Error al obtener los prestatarios')
       } finally {
         setIsLoading(false)
       }
@@ -51,16 +51,16 @@ export function BorrowerManagement() {
     <div className="container mx-auto px-4 py-8">
       <Link href="/" passHref>
         <Button variant="outline" className="mb-4">
-          <ArrowLeft className="mr-2 h-4 w-4" /> Back to Main
+          <ArrowLeft className="mr-2 h-4 w-4" /> Volver al Inicio
         </Button>
       </Link>
       <Toaster position="top-right" />
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-2xl font-bold">Borrower Management</CardTitle>
+          <CardTitle className="text-2xl font-bold">Gestión de Prestatarios</CardTitle>
           <Link href="/borrowers/add" passHref>
             <Button>
-              <Plus className="mr-2 h-4 w-4" /> Add Borrower
+              <Plus className="mr-2 h-4 w-4" /> Añadir Prestatario
             </Button>
           </Link>
         </CardHeader>
@@ -68,7 +68,7 @@ export function BorrowerManagement() {
           <div className="flex items-center space-x-2 mb-4">
             <Search className="w-4 h-4 text-gray-500" />
             <Input
-              placeholder="Search borrowers..."
+              placeholder="Buscar prestatarios..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="max-w-sm"
@@ -82,10 +82,10 @@ export function BorrowerManagement() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Name</TableHead>
-                  <TableHead>Phone Number</TableHead>
-                  <TableHead>Score</TableHead>
-                  <TableHead>Actions</TableHead>
+                  <TableHead>Nombre</TableHead>
+                  <TableHead>Número de Teléfono</TableHead>
+                  <TableHead>Puntuación</TableHead>
+                  <TableHead>Acciones</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -94,19 +94,19 @@ export function BorrowerManagement() {
                     <TableCell className="font-medium">{borrower.name}</TableCell>
                     <TableCell>{borrower.phoneNumber}</TableCell>
                     <TableCell className={getScoreColor(borrower.score || 0)}>
-                    {borrower.score}
-                  </TableCell>
+                      {borrower.score}
+                    </TableCell>
                     <TableCell>
                       <div className="flex space-x-2">
                         <Link href={`/borrowers/${borrower.id}`} passHref>
                           <Button variant="outline" size="sm">
                             <User className="mr-2 h-4 w-4" />
-                            View Profile
+                            Ver Perfil
                           </Button>
                         </Link>
                         <Link href={`/borrowers/${borrower.id}/add-loan`} passHref>
                           <Button variant="outline" size="sm">
-                            <DollarSign className="mr-2 h-4 w-4" /> Add Loan
+                            <DollarSign className="mr-2 h-4 w-4" /> Añadir Préstamo
                           </Button>
                         </Link>
                       </div>
